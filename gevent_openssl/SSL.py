@@ -28,19 +28,22 @@ class Connection(object):
     def __iowait(self, io_func, *args, **kwargs):
         timeout = self._sock.gettimeout() or 0.1
         fd = self._sock.fileno()
+        #print(fd)
         while True:
+            readFDs=[]
+            writeFDs=[]
             try:
                 return io_func(*args, **kwargs)
             except (OpenSSL.SSL.WantReadError, OpenSSL.SSL.WantX509LookupError):
-                sys.exc_clear()
-                _, _, errors = select.select([fd], [], [fd], timeout)
-                if errors:
-                    break
+                readFDs = [fd]
             except OpenSSL.SSL.WantWriteError:
-                sys.exc_clear()
-                _, _, errors = select.select([], [fd], [fd], timeout)
-                if errors:
-                    break
+                writeFDs = [fd]
+            if writeFDs or readFDs:
+                r, w, e = select.select(readFDs, writeFDs, [fd], timeout)
+            if not r and not w and not e: # timeout
+                break
+            if e:
+                break
 
     def accept(self):
         sock, addr = self._sock.accept()
