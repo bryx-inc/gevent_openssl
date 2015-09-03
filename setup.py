@@ -4,11 +4,11 @@ from setuptools import setup, find_packages
 
 setup(
     name='gevent_openssl',
-    version='1.1',
+    version='1.2',
     description='A gevent wrapper for pyOpenSSL',
-    author='Menno Finlay-Smits',
-    author_email='menno@freshfoo.com',
-    url='https://github.com/mjs/gevent_openssl',
+    author='Travis Brown',
+    author_email='travis@bryx.com',
+    url='https://github.com/bryx-inc/gevent_openssl',
     packages=find_packages(),
     zip_safe=False,
     include_package_data=True,
